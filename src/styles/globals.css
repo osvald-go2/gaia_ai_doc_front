@@ -1,0 +1,476 @@
+@custom-variant dark (&:is(.dark *));
+
+/* Default Theme - Neon Green Dark Theme */
+:root, [data-theme="dark"] {
+  --font-size: 16px;
+  --background: #0f0f11;
+  --foreground: #e8e8eb;
+  --card: #18181b;
+  --card-foreground: #e8e8eb;
+  --popover: #18181b;
+  --popover-foreground: #e8e8eb;
+  --primary: #00ff88;
+  --primary-foreground: #000000;
+  --secondary: #27272a;
+  --secondary-foreground: #e8e8eb;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #00ff88;
+  --accent-foreground: #000000;
+  --destructive: #ff3366;
+  --destructive-foreground: #ffffff;
+  --border: #3f3f46;
+  --input: #27272a;
+  --input-background: #18181b;
+  --switch-background: #27272a;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #00ff88;
+  --chart-1: #00ff88;
+  --chart-2: #00cc6a;
+  --chart-3: #00aa55;
+  --chart-4: #008844;
+  --chart-5: #006633;
+  --radius: 0.5rem;
+  --sidebar: #0f0f11;
+  --sidebar-foreground: #e8e8eb;
+  --sidebar-primary: #00ff88;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #18181b;
+  --sidebar-accent-foreground: #00ff88;
+  --sidebar-border: #3f3f46;
+  --sidebar-ring: #00ff88;
+}
+
+/* Claude Code Theme - Amber/Orange Light Theme */
+[data-theme="claude"] {
+  --font-size: 16px;
+  --background: #fafaf9;
+  --foreground: #292524;
+  --card: #ffffff;
+  --card-foreground: #292524;
+  --popover: #ffffff;
+  --popover-foreground: #292524;
+  --primary: #ea580c;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f4;
+  --secondary-foreground: #292524;
+  --muted: #f5f5f4;
+  --muted-foreground: #78716c;
+  --accent: #ea580c;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e7e5e4;
+  --input: #f5f5f4;
+  --input-background: #ffffff;
+  --switch-background: #e7e5e4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #ea580c;
+  --chart-1: #ea580c;
+  --chart-2: #f97316;
+  --chart-3: #fb923c;
+  --chart-4: #fdba74;
+  --chart-5: #fed7aa;
+  --radius: 0.5rem;
+  --sidebar: #fafaf9;
+  --sidebar-foreground: #292524;
+  --sidebar-primary: #ea580c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f5f4;
+  --sidebar-accent-foreground: #ea580c;
+  --sidebar-border: #e7e5e4;
+  --sidebar-ring: #ea580c;
+}
+
+.dark {
+  --background: #0f0f11;
+  --foreground: #e8e8eb;
+  --card: #18181b;
+  --card-foreground: #e8e8eb;
+  --popover: #18181b;
+  --popover-foreground: #e8e8eb;
+  --primary: #00ff88;
+  --primary-foreground: #000000;
+  --secondary: #27272a;
+  --secondary-foreground: #e8e8eb;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #00ff88;
+  --accent-foreground: #000000;
+  --destructive: #ff3366;
+  --destructive-foreground: #ffffff;
+  --border: #3f3f46;
+  --input: #27272a;
+  --ring: #00ff88;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #00ff88;
+  --chart-2: #00cc6a;
+  --chart-3: #00aa55;
+  --chart-4: #008844;
+  --chart-5: #006633;
+  --sidebar: #0f0f11;
+  --sidebar-foreground: #e8e8eb;
+  --sidebar-primary: #00ff88;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #18181b;
+  --sidebar-accent-foreground: #00ff88;
+  --sidebar-border: #3f3f46;
+  --sidebar-ring: #00ff88;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    transition: border-color 0.3s ease, outline-color 0.3s ease;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Smooth transitions for theme changes */
+  :root, [data-theme] {
+    transition: 
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  
+  /* Apply transitions to common elements */
+  button, input, textarea, select, a {
+    transition: 
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  
+  /* Claude theme specific enhancements */
+  [data-theme="claude"] {
+    /* Softer shadows for Claude theme */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    
+    /* Warm amber glow for progress and interactive elements */
+    --primary-glow: rgba(234, 88, 12, 0.15);
+    --primary-glow-strong: rgba(234, 88, 12, 0.3);
+  }
+  
+  /* Dark theme specific enhancements */
+  [data-theme="dark"] {
+    /* Glowing shadows for dark theme */
+    --shadow-sm: 0 1px 2px 0 rgb(0 255 136 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 255 136 / 0.1), 0 1px 2px -1px rgb(0 255 136 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 255 136 / 0.1), 0 2px 4px -2px rgb(0 255 136 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 255 136 / 0.1), 0 4px 6px -4px rgb(0 255 136 / 0.1);
+    
+    /* Neon green glow for progress and interactive elements */
+    --primary-glow: rgba(0, 255, 136, 0.2);
+    --primary-glow-strong: rgba(0, 255, 136, 0.4);
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Checkbox 主题增强样式 */
+@layer components {
+  /* 基础复选框样式 */
+  [data-slot="checkbox"] {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* 复选框悬停时的微妙光晕效果 */
+  [data-slot="checkbox"]::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  [data-slot="checkbox"]:hover::before {
+    opacity: 0.1;
+  }
+  
+  /* Dark theme - 荧光绿主题的复选框发光效果 */
+  [data-theme="dark"] [data-slot="checkbox"][data-state="checked"] {
+    box-shadow: 
+      0 0 0 1px rgba(0, 255, 136, 0.4),
+      0 0 12px rgba(0, 255, 136, 0.25),
+      0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  [data-theme="dark"] [data-slot="checkbox"]:hover:not([data-state="checked"]) {
+    box-shadow: 0 0 0 1px rgba(0, 255, 136, 0.15);
+  }
+  
+  [data-theme="dark"] [data-slot="checkbox"]:focus-visible {
+    box-shadow: 
+      0 0 0 3px rgba(0, 255, 136, 0.25),
+      0 0 12px rgba(0, 255, 136, 0.2);
+  }
+  
+  [data-theme="dark"] [data-slot="checkbox"][data-state="checked"]:hover {
+    box-shadow: 
+      0 0 0 1px rgba(0, 255, 136, 0.5),
+      0 0 16px rgba(0, 255, 136, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Claude theme - 琥珀色主题的复选框温暖效果 */
+  [data-theme="claude"] [data-slot="checkbox"][data-state="checked"] {
+    box-shadow: 
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(234, 88, 12, 0.25);
+  }
+  
+  [data-theme="claude"] [data-slot="checkbox"]:hover:not([data-state="checked"]) {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  [data-theme="claude"] [data-slot="checkbox"]:focus-visible {
+    box-shadow: 
+      0 0 0 3px rgba(234, 88, 12, 0.15),
+      0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  [data-theme="claude"] [data-slot="checkbox"][data-state="checked"]:hover {
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(234, 88, 12, 0.3);
+  }
+  
+  /* Checkbox 勾选动画 */
+  [data-slot="checkbox-indicator"] {
+    animation: checkboxCheck 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  @keyframes checkboxCheck {
+    0% {
+      transform: scale(0) rotate(-45deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.15) rotate(0deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+  
+  /* 复选框激活时的脉冲效果 */
+  [data-slot="checkbox"][data-state="checked"]::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border: 2px solid var(--primary);
+    border-radius: 6px;
+    opacity: 0;
+    animation: checkboxPulse 0.5s ease-out;
+    pointer-events: none;
+  }
+  
+  @keyframes checkboxPulse {
+    0% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.3);
+    }
+  }
+  
+  /* SQL 语法高亮样式 - VSCode风格 */
+  .sql-editor {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    tab-size: 4;
+  }
+  
+  /* ===== Dark Theme - VSCode Dark+ 配色 ===== */
+  :root .sql-editor,
+  [data-theme="dark"] .sql-editor,
+  .dark .sql-editor {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+  }
+  
+  :root .sql-keyword,
+  [data-theme="dark"] .sql-keyword,
+  .dark .sql-keyword {
+    color: #569cd6; /* 蓝色关键字 */
+    font-weight: 500;
+  }
+  
+  :root .sql-string,
+  [data-theme="dark"] .sql-string,
+  .dark .sql-string {
+    color: #ce9178; /* 橙褐色字符串 */
+  }
+  
+  :root .sql-comment,
+  [data-theme="dark"] .sql-comment,
+  .dark .sql-comment {
+    color: #6a9955; /* 绿色注释 */
+    font-style: italic;
+  }
+  
+  :root .sql-variable,
+  [data-theme="dark"] .sql-variable,
+  .dark .sql-variable {
+    color: #9cdcfe; /* 浅蓝色变量 */
+  }
+  
+  :root .sql-number,
+  [data-theme="dark"] .sql-number,
+  .dark .sql-number {
+    color: #b5cea8; /* 浅绿色数字 */
+  }
+  
+  :root .sql-operator,
+  [data-theme="dark"] .sql-operator,
+  .dark .sql-operator {
+    color: #d4d4d4; /* 浅灰色操作符 */
+  }
+  
+  /* ===== Claude Theme - VSCode Light+ 配色 ===== */
+  [data-theme="claude"] .sql-editor {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  [data-theme="claude"] .sql-keyword {
+    color: #0000ff; /* 蓝色关键字 */
+    font-weight: 500;
+  }
+  
+  [data-theme="claude"] .sql-string {
+    color: #a31515; /* 红褐色字符串 */
+  }
+  
+  [data-theme="claude"] .sql-comment {
+    color: #008000; /* 绿色注释 */
+    font-style: italic;
+  }
+  
+  [data-theme="claude"] .sql-variable {
+    color: #001080; /* 深蓝色变量 */
+  }
+  
+  [data-theme="claude"] .sql-number {
+    color: #098658; /* 绿色数字 */
+  }
+  
+  [data-theme="claude"] .sql-operator {
+    color: #000000; /* 黑色操作符 */
+  }
+}
