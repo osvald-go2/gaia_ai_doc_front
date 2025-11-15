@@ -1,10 +1,16 @@
 
   import { defineConfig } from 'vite';
-  import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react-swc';
+import MonacoEditorPlugin from 'vite-plugin-monaco-editor';
   import path from 'path';
 
   export default defineConfig({
-    plugins: [react()],
+    plugins: [
+      react(),
+      MonacoEditorPlugin({
+        languageWorkers: ['editorWorkerService']
+      })
+    ],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       alias: {

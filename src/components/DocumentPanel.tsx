@@ -60,7 +60,7 @@ export function DocumentPanel({ sections, highlightedSection, isCollapsed, onTog
             transition={{ duration: 0.2 }}
             className="h-full flex flex-col"
           >
-            <div className="p-4 border-b border-border flex items-center justify-between bg-gradient-to-b from-card to-transparent">
+            <div className="p-3 sm:p-4 md:p-4 border-b border-border flex items-center justify-between bg-gradient-to-b from-card to-transparent">
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-primary drop-shadow-sm" />
                 <h2 className="text-foreground">文档内容</h2>
@@ -77,7 +77,7 @@ export function DocumentPanel({ sections, highlightedSection, isCollapsed, onTog
 
       <ScrollAreaPrimitive.Root className="relative flex-1 overflow-hidden">
         <ScrollAreaPrimitive.Viewport className="h-full w-full">
-          <div className="p-6 space-y-6">
+          <div className="p-3 sm:p-4 md:p-6 space-y-6">
           {sections.map((section) => (
             <div
               key={section.id}
@@ -90,7 +90,7 @@ export function DocumentPanel({ sections, highlightedSection, isCollapsed, onTog
               } ${section.isAPI ? 'cursor-pointer' : ''}`}
             >
               {/* 文档标题栏 */}
-              <div className={`px-6 py-4 border-b flex items-center justify-between ${
+              <div className={`px-3 sm:px-4 md:px-6 py-4 border-b flex items-center justify-between ${
                 highlightedSection === section.id
                   ? 'border-primary/30 bg-gradient-to-r from-primary/10 to-transparent'
                   : 'border-border/30'
@@ -114,7 +114,7 @@ export function DocumentPanel({ sections, highlightedSection, isCollapsed, onTog
               </div>
 
               {/* 文档内容 */}
-              <div className="px-6 py-5">
+              <div className="px-3 sm:px-4 md:px-6 py-5">
                 {/* API 接口展示图片 */}
                 {section.isAPI && (
                   <div className="mb-6">
@@ -132,7 +132,7 @@ export function DocumentPanel({ sections, highlightedSection, isCollapsed, onTog
                 )}
                 
                 <div className="prose prose-sm prose-invert max-w-none">
-                  <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap m-0">
+                  <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-words m-0">
                     {section.content.split('\n\n').map((paragraph, idx) => (
                       <span key={idx} className="block mb-4 last:mb-0">
                         {paragraph}
