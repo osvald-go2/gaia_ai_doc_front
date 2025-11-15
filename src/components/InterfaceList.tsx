@@ -149,9 +149,11 @@ export function InterfaceList({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {onSelectAll && hasInterfaces && (
-                      <button
+                      <div
                         onClick={() => onSelectAll(!allSelected)}
-                        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
+                        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group cursor-pointer"
+                        role="button"
+                        tabIndex={0}
                       >
                         <div className="relative">
                           <Checkbox 
@@ -174,7 +176,7 @@ export function InterfaceList({
                         <span className="group-hover:text-primary transition-colors">
                           {selectedIds.length > 0 ? `已选 ${selectedIds.length}` : `共 ${interfaces.length}`}
                         </span>
-                      </button>
+                      </div>
                     )}
                     {!onSelectAll && (
                       <p className="text-xs text-muted-foreground">共 {interfaces.length} 个接口</p>
@@ -247,7 +249,7 @@ export function InterfaceList({
                 
                 return (
                   <motion.div
-                    key={api.id}
+                    key={`${api.id}-${index}`}
                     initial={{ opacity: 0, x: -20, scale: 0.95 }}
                     animate={{ opacity: 1, x: 0, scale: 1 }}
                     transition={{

@@ -217,6 +217,23 @@
   }
 }
 
+/* Canvas grid background */
+.canvas-grid {
+  background-image: linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+[data-theme="dark"] .canvas-grid, .dark .canvas-grid {
+  background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+}
+@supports (color: color-mix(in lab, red, red)) {
+  .canvas-grid {
+    background-image: linear-gradient(color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px),
+                      linear-gradient(90deg, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px);
+  }
+}
+
 /**
  * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
  */

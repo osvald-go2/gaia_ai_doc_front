@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { APIInterface } from './InterfaceList';
 import { Button } from './ui/button';
 import { Database, FileCode, Package, ChevronDown, ChevronUp, GripHorizontal, Copy, Check } from 'lucide-react';
@@ -6,6 +6,7 @@ import { toast } from 'sonner@2.0.3';
 import { ScrollBar } from './ui/scroll-area';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area@1.2.3';
 import { Resizable } from 're-resizable';
+import SqlMonacoEditor from './SqlMonacoEditor';
 
 interface WorkflowNode {
   id: string;
@@ -142,6 +143,9 @@ export function WorkflowPreview({ interface: apiInterface }: WorkflowPreviewProp
   const [sqlPanelHeight, setSqlPanelHeight] = useState(300); // 默认半屏高度
   const [isResizing, setIsResizing] = useState(false); // 拖拽状态
   const [copied, setCopied] = useState(false); // 复制状态
+  const [sqlByNode, setSqlByNode] = useState<Record<string, string>>({});
+  const [sqlPanelInitialized, setSqlPanelInitialized] = useState(false);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   // 根据接口生成工作流节点 - 从右到左排列，起始节点在最右侧
   const generateNodes = (): WorkflowNode[] => {
@@ -273,11 +277,11 @@ FOR JSON PATH, ROOT('data');`;
   const getNodeColor = (type: string) => {
     switch (type) {
       case 'input':
-        return 'bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/10 border-blue-300 dark:border-blue-700/50';
+        return 'bg-gradient-to-br from-secondary/30 to-secondary/10 dark:from-secondary/10 dark:to-secondary/5 border-border';
       case 'process':
-        return 'bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5 border-primary/30 dark:border-primary/40';
+        return 'bg-gradient-to-br from-primary/10 to-primary/5 border-primary/40';
       case 'output':
-        return 'bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/10 border-green-300 dark:border-green-700/50';
+        return 'bg-gradient-to-br from-card/50 to-secondary/20 border-border';
       default:
         return 'bg-gradient-to-br from-secondary/20 to-secondary/10 dark:from-secondary/10 dark:to-secondary/5 border-border';
     }
@@ -299,12 +303,12 @@ FOR JSON PATH, ROOT('data');`;
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Canvas Area */}
-      <div className="flex-1 relative overflow-hidden bg-[#f5f5f5] dark:bg-[#1a1a1a]">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]" />
+      <div ref={canvasRef} className="flex-1 relative overflow-hidden bg-background">
         
         <ScrollAreaPrimitive.Root className="relative w-full h-full">
           <ScrollAreaPrimitive.Viewport className="w-full h-full">
             <div className="relative w-full h-full p-6 flex items-start justify-center">
+              <div className="absolute inset-0 canvas-grid pointer-events-none" style={{ zIndex: 0 }} />
               <div className="relative" style={{ width: '720px', height: '200px' }}>
               {/* SVG for connections */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
@@ -317,7 +321,7 @@ FOR JSON PATH, ROOT('data');`;
                     refY="5"
                     orient="auto"
                   >
-                    <polygon points="0 0, 10 5, 0 10" fill="#000000" className="dark:fill-white" />
+                    <polygon points="0 0, 10 5, 0 10" style={{ fill: 'var(--primary)' }} />
                   </marker>
                 </defs>
                 {connections.map((conn, i) => {
@@ -332,11 +336,10 @@ FOR JSON PATH, ROOT('data');`;
                     <g key={i}>
                       <path
                         d={`M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`}
-                        stroke="#000000"
-                        className="dark:stroke-white"
-                        strokeWidth="2"
+                        style={{ stroke: 'var(--primary)' }}
+                        strokeWidth={2}
                         fill="none"
-                        opacity="0.3"
+                        opacity={0.35}
                         markerEnd="url(#arrowhead)"
                       />
                     </g>
@@ -352,12 +355,21 @@ FOR JSON PATH, ROOT('data');`;
                   style={{ left: node.x, top: node.y, zIndex: 10 }}
                 >
                   <button
-                    onClick={() => {
-                      if (node.sql) {
-                        setSelectedNode(node);
-                        setShowSQLPanel(true);
+                  onClick={() => {
+                    if (node.sql) {
+                      setSqlByNode((prev) => ({
+                        ...prev,
+                        [node.id]: prev[node.id] ?? (node.sql || ''),
+                      }));
+                      if (!sqlPanelInitialized) {
+                        const ch = canvasRef.current?.clientHeight ?? window.innerHeight;
+                        setSqlPanelHeight(Math.round(ch * 0.5));
+                        setSqlPanelInitialized(true);
                       }
-                    }}
+                      setSelectedNode(node);
+                      setShowSQLPanel(true);
+                    }
+                  }}
                     className={`
                       w-[120px] h-[70px] rounded-lg border-2 
                       ${getNodeColor(node.type)}
@@ -366,7 +378,7 @@ FOR JSON PATH, ROOT('data');`;
                       relative group shadow-sm
                     `}
                   >
-                    <div className={`${node.type === 'input' ? 'text-blue-600 dark:text-blue-400' : node.type === 'process' ? 'text-primary' : node.type === 'output' ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}`}>
+                    <div className={`${node.type === 'process' ? 'text-primary' : 'text-foreground'}`}>
                       {getNodeIcon(node.type)}
                     </div>
                     <div className="text-xs text-center whitespace-pre-line text-foreground leading-tight">
@@ -425,6 +437,7 @@ FOR JSON PATH, ROOT('data');`;
             willChange: isResizing ? 'height' : 'auto',
           }}
         >
+          <div className="flex flex-col h-full">
           <div className="px-4 py-2.5 border-b border-border flex items-center justify-between mt-2 bg-background/95 backdrop-blur-sm">
             <div className="flex items-center gap-2">
               <FileCode className="w-3.5 h-3.5 text-primary" />
@@ -436,8 +449,9 @@ FOR JSON PATH, ROOT('data');`;
             <div className="flex items-center gap-1">
               <Button
                 onClick={() => {
-                  if (selectedNode.sql) {
-                    navigator.clipboard.writeText(selectedNode.sql).then(() => {
+                  const currentSql = sqlByNode[selectedNode.id] ?? selectedNode.sql ?? '';
+                  if (currentSql) {
+                    navigator.clipboard.writeText(currentSql).then(() => {
                       setCopied(true);
                       toast.success('SQL已复制到剪贴板');
                       setTimeout(() => setCopied(false), 2000);
@@ -448,7 +462,7 @@ FOR JSON PATH, ROOT('data');`;
                 }}
                 variant="ghost"
                 size="sm"
-                className="h-6 text-xs px-2 hover:bg-primary/10"
+                className="h-6 text-xs px-2"
               >
                 {copied ? (
                   <>
@@ -474,16 +488,17 @@ FOR JSON PATH, ROOT('data');`;
             </div>
           </div>
           
-          <ScrollAreaPrimitive.Root style={{ height: `calc(100% - 38px)` }}>
-            <ScrollAreaPrimitive.Viewport className="w-full h-full">
-              <div className="p-4">
-                <pre className="sql-editor text-xs font-mono border border-border rounded-lg p-4 overflow-x-auto leading-relaxed">
-                  {highlightSQL(selectedNode.sql || '')}
-                </pre>
-              </div>
-            </ScrollAreaPrimitive.Viewport>
-            <ScrollBar orientation="vertical" />
-          </ScrollAreaPrimitive.Root>
+          <div className="flex-1 min-h-0">
+            <div className="h-full p-3">
+              <SqlMonacoEditor
+                value={(sqlByNode[selectedNode.id] ?? selectedNode.sql ?? '')}
+                onChange={(v) => {
+                  setSqlByNode((prev) => ({ ...prev, [selectedNode.id]: v }));
+                }}
+              />
+            </div>
+          </div>
+          </div>
         </Resizable>
       )}
 

@@ -76,7 +76,7 @@ export function SettingsPanel({
                     >
                       <SelectTrigger
                         id="theme"
-                        className="bg-secondary border-border text-foreground h-9 focus:border-primary/50 transition-all"
+                        className="bg-secondary border-border text-foreground h-9 focus:border-primary/50 transition-all px-4"
                       >
                         <SelectValue />
                       </SelectTrigger>

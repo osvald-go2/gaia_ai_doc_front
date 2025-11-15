@@ -5,6 +5,7 @@ import { Header } from './components/Header';
 import { DocumentPanel } from './components/DocumentPanel';
 import { InterfaceList, APIInterface } from './components/InterfaceList';
 import { InterfaceEditor } from './components/InterfaceEditor';
+import GeneratorLayout from './pages/GeneratorLayout';
 import { DocumentPreview } from './components/DocumentPreview';
 import { APIGenerator } from './components/APIGenerator';
 import { HistoryPanel, HistoryItem } from './components/HistoryPanel';
@@ -411,101 +412,22 @@ function AppContent() {
         interfaces={interfaces.filter((i) => selectedInterfaceIds.includes(i.id))}
       />
 
-      {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden bg-gradient-to-br from-background to-background/95">
-        {/* Document Panel */}
-        <motion.div
-          initial={false}
-          animate={{ width: isDocPanelCollapsed ? '56px' : '320px' }}
-          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-          className="h-full flex-shrink-0"
-        >
-          <DocumentPanel
-            sections={documentSections}
-            highlightedSection={highlightedSection}
-            isCollapsed={isDocPanelCollapsed}
-            onToggleCollapse={() => setIsDocPanelCollapsed(!isDocPanelCollapsed)}
-            onSectionClick={handleSectionClick}
-          />
-        </motion.div>
-
-        {/* Interface List */}
-        <motion.div
-          initial={false}
-          animate={{ width: isListPanelCollapsed ? '56px' : '320px' }}
-          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-          className="h-full flex-shrink-0"
-        >
-          <InterfaceList
-            interfaces={interfaces}
-            selectedId={selectedInterfaceId}
-            selectedIds={selectedInterfaceIds}
-            onSelect={setSelectedInterfaceId}
-            onToggleSelect={handleToggleSelectInterface}
-            onSelectAll={handleSelectAllInterfaces}
-            onAdd={handleAddInterface}
-            isCollapsed={isListPanelCollapsed}
-            onToggleCollapse={() => setIsListPanelCollapsed(!isListPanelCollapsed)}
-            onViewSource={handleViewSource}
-          />
-        </motion.div>
-
-        {/* Interface Editor */}
-        <div className="flex-1 h-full min-w-0">
-          {selectedInterface ? (
-            <InterfaceEditor
-              interface={selectedInterface}
-              onUpdate={handleInterfaceUpdate}
-              onViewSource={handleViewSource}
-              onClose={() => setSelectedInterfaceId(undefined)}
-            />
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center bg-card">
-              <div className="flex flex-col items-center gap-8">
-                {/* Icon Container */}
-                <div className="relative">
-                  {/* Outer Glow Ring */}
-                  <div className="absolute inset-0 rounded-full bg-primary/5 blur-2xl animate-pulse" style={{ width: '200px', height: '200px' }} />
-
-                  {/* Main Icon Circle */}
-                  <div className="relative w-48 h-48 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/30 flex items-center justify-center backdrop-blur-sm">
-                    {/* Inner Circle */}
-                    <div className="w-36 h-36 rounded-full bg-card/50 border border-primary/20 flex items-center justify-center">
-                      {/* Icon */}
-                      <svg
-                        className="w-20 h-20 text-primary"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        {/* Table/Fields Icon */}
-                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                        <line x1="3" y1="9" x2="21" y2="9" />
-                        <line x1="9" y1="21" x2="9" y2="9" />
-                        <line x1="3" y1="15" x2="21" y2="15" />
-                      </svg>
-                    </div>
-
-                    {/* Decorative Dots */}
-                    <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: '0s' }} />
-                    <div className="absolute bottom-6 left-6 w-2 h-2 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: '0.5s' }} />
-                    <div className="absolute top-8 left-4 w-1.5 h-1.5 rounded-full bg-primary/30 animate-pulse" style={{ animationDelay: '1s' }} />
-                  </div>
-                </div>
-
-                {/* Text */}
-                <div className="text-center space-y-2">
-                  <h3 className="text-foreground/90 tracking-wide">请选择接口进行字段配置</h3>
-                  <p className="text-sm text-muted-foreground">从左侧接口列表中选择一个接口开始编辑</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Main Content - 3 Panel Layout */}
+      <GeneratorLayout
+        interfaces={interfaces}
+        documentSections={documentSections}
+        selectedInterfaceId={selectedInterfaceId}
+        selectedInterfaceIds={selectedInterfaceIds}
+        onSelectInterface={setSelectedInterfaceId}
+        onToggleSelectInterface={handleToggleSelectInterface}
+        onSelectAllInterfaces={handleSelectAllInterfaces}
+        onAddInterface={handleAddInterface}
+        highlightedSection={highlightedSection}
+        onSectionClick={handleSectionClick}
+        onViewSource={handleViewSource}
+        onInterfaceUpdate={handleInterfaceUpdate}
+        onCloseEditor={() => setSelectedInterfaceId(undefined)}
+      />
 
       <Toaster position="bottom-right" />
     </div>
