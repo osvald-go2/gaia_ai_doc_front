@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { APIInterface, APIField, APIResponseField } from './InterfaceList';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { ScrollBar } from './ui/scroll-area';
-import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area@1.2.3';
+import { ScrollArea } from './ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Trash2, Plus, FileText, ArrowDownToLine, ArrowUpFromLine, X, Eye, Settings2 } from 'lucide-react';
 import { Switch } from './ui/switch';
@@ -219,9 +218,8 @@ export function InterfaceEditor({ interface: apiInterface, onUpdate, onViewSourc
 
       {/* 根据视图模式显示不同内容 */}
       {viewMode === 'config' ? (
-        <ScrollAreaPrimitive.Root className="relative flex-1 overflow-hidden">
-          <ScrollAreaPrimitive.Viewport className="h-full w-full">
-            <div className="flex flex-col">
+        <ScrollArea className="relative flex-1">
+          <div className="flex flex-col">
             {/* 入参区域 */}
             <div className="border-b border-border">
               <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-secondary/30 to-transparent">
@@ -425,19 +423,8 @@ export function InterfaceEditor({ interface: apiInterface, onUpdate, onViewSourc
                 )}
               </div>
             </div>
-          </div>
-        </ScrollAreaPrimitive.Viewport>
-        
-        {/* 自定义滚动条样式 - 悬停时显示 */}
-        <ScrollAreaPrimitive.ScrollAreaScrollbar
-          orientation="vertical"
-          className="flex touch-none select-none transition-all w-2.5 border-l border-l-transparent p-px hover:w-3.5 duration-200 data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out-0 data-[state=visible]:fade-in-0"
-        >
-          <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-primary/30 hover:bg-primary/50 transition-colors duration-200" />
-        </ScrollAreaPrimitive.ScrollAreaScrollbar>
-        
-        <ScrollAreaPrimitive.Corner />
-      </ScrollAreaPrimitive.Root>
+            </div>
+        </ScrollArea>
       ) : (
         <div className="flex-1 overflow-hidden">
           <WorkflowPreview interface={editingInterface} />

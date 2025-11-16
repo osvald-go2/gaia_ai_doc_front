@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels@2.1.7';
-import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area@1.2.3';
+import { ScrollArea } from '../components/ui/scroll-area';
+import { ResizableHandle } from '../components/ui/resizable';
 import { DocumentPanel } from '../components/DocumentPanel';
 import { InterfaceList, APIInterface } from '../components/InterfaceList';
 import { InterfaceEditor } from '../components/InterfaceEditor';
@@ -82,21 +83,17 @@ export default function GeneratorLayout(props: GeneratorLayoutProps) {
               <div className="text-xs text-muted-foreground" style={{ writingMode: 'vertical-rl' }}>文档</div>
             </div>
           ) : (
-            <ScrollAreaPrimitive.Root className="relative flex-1 overflow-hidden">
-              <ScrollAreaPrimitive.Viewport className="h-full w-full">
-                <DocumentPanel
-                  sections={documentSections}
-                  highlightedSection={highlightedSection}
-                  isCollapsed={false}
-                  onToggleCollapse={() => setCollapsedLeft(true)}
-                  onSectionClick={onSectionClick}
-                />
-              </ScrollAreaPrimitive.Viewport>
-            </ScrollAreaPrimitive.Root>
+            <DocumentPanel
+              sections={documentSections}
+              highlightedSection={highlightedSection}
+              isCollapsed={false}
+              onToggleCollapse={() => setCollapsedLeft(true)}
+              onSectionClick={onSectionClick}
+            />
           )}
         </div>
       </Panel>
-      <PanelResizeHandle className="w-1 bg-border hover:bg-primary/30 transition-colors" />
+      <ResizableHandle withHandle />
 
       {/* Middle: Interface List */}
       <Panel defaultSize={computedSizes[1]} minSize={12} className="h-full">
@@ -107,26 +104,22 @@ export default function GeneratorLayout(props: GeneratorLayoutProps) {
               <div className="text-xs text-muted-foreground" style={{ writingMode: 'vertical-rl' }}>接口</div>
             </div>
           ) : (
-            <ScrollAreaPrimitive.Root className="relative flex-1 overflow-hidden">
-              <ScrollAreaPrimitive.Viewport className="h-full w-full">
-                <InterfaceList
-                  interfaces={interfaces}
-                  selectedId={selectedInterfaceId}
-                  selectedIds={selectedInterfaceIds}
-                  onSelect={onSelectInterface}
-                  onToggleSelect={onToggleSelectInterface}
-                  onSelectAll={onSelectAllInterfaces}
-                  onAdd={onAddInterface}
-                  isCollapsed={false}
-                  onToggleCollapse={() => setCollapsedMid(true)}
-                  onViewSource={onViewSource}
-                />
-              </ScrollAreaPrimitive.Viewport>
-            </ScrollAreaPrimitive.Root>
+            <InterfaceList
+              interfaces={interfaces}
+              selectedId={selectedInterfaceId}
+              selectedIds={selectedInterfaceIds}
+              onSelect={onSelectInterface}
+              onToggleSelect={onToggleSelectInterface}
+              onSelectAll={onSelectAllInterfaces}
+              onAdd={onAddInterface}
+              isCollapsed={false}
+              onToggleCollapse={() => setCollapsedMid(true)}
+              onViewSource={onViewSource}
+            />
           )}
         </div>
       </Panel>
-      <PanelResizeHandle className="w-1 bg-border hover:bg-primary/30 transition-colors" />
+      <ResizableHandle withHandle />
 
       {/* Right: Interface Editor (字段配置 + 工作流预览) */}
       <Panel defaultSize={computedSizes[2]} minSize={30} className="h-full">

@@ -4,13 +4,16 @@
  */
 
 import { APIInterface } from '../components/InterfaceList';
-import { BackendWorkflowResponse, ISMData, InterfaceData, DimensionData, MetricData } from '../types/backend';
+import { BackendWorkflowResponse, ISMData, InterfaceData, DimensionData, MetricData, DocChunk, InterfaceField } from '../types/backend';
 
 export interface DocumentSection {
   id: string;
   title: string;
   content: string;
   isAPI: boolean;
+  chunkId?: string; // 关联的文档块ID
+  chunkType?: string; // 文档块类型
+  importanceScore?: number; // 重要性评分
 }
 
 /**
@@ -25,14 +28,27 @@ export function transformISMToInterfaces(ism: ISMData): APIInterface[] {
   return ism.interfaces.map((interfaceData: InterfaceData, index: number) => {
     const interfaceId = `api-${interfaceData.id || index}`;
 
+    const backendFields = Array.isArray(interfaceData.fields) ? interfaceData.fields : [];
+
+    const mappedFromBackend = mapBackendInterfaceFields(backendFields);
+    const fallbackRequest = transformRequestFields(interfaceData);
+    const fallbackResponse = transformResponseFields(interfaceData);
+
+    const requestFields = dedupeFields([...mappedFromBackend.requestFields, ...fallbackRequest]);
+    const responseFields = dedupeResponseFields([...mappedFromBackend.responseFields, ...fallbackResponse]);
+
+    const sourceSection = Array.isArray(interfaceData.source_chunk_ids) && interfaceData.source_chunk_ids.length > 0
+      ? `section-chunk-${interfaceData.source_chunk_ids[0]}`
+      : `section-${index + 1}`;
+
     return {
       id: interfaceId,
       name: interfaceData.name || `接口${index + 1}`,
       method: determineHttpMethod(interfaceData),
       endpoint: generateEndpoint(interfaceData),
-      sourceSection: `section-${index + 1}`,
-      requestFields: transformRequestFields(interfaceData),
-      responseFields: transformResponseFields(interfaceData),
+      sourceSection,
+      requestFields,
+      responseFields,
     };
   });
 }
@@ -169,26 +185,6 @@ function transformRequestFields(interfaceData: InterfaceData): any[] {
 function transformResponseFields(interfaceData: InterfaceData): any[] {
   const fields: any[] = [];
 
-  // 添加基础响应字段
-  fields.push(
-    {
-      id: 'resp-success',
-      name: 'success',
-      expression: 'response.success',
-      description: '请求是否成功',
-      required: true,
-      type: 'boolean',
-    },
-    {
-      id: 'resp-message',
-      name: 'message',
-      expression: 'response.message',
-      description: '响应消息',
-      required: true,
-      type: 'string',
-    }
-  );
-
   // 判断是否为列表类型的接口
   const isListType = interfaceData.type?.includes('display') ||
                     interfaceData.type?.includes('list') ||
@@ -257,34 +253,166 @@ function transformResponseFields(interfaceData: InterfaceData): any[] {
   return fields;
 }
 
+function mapBackendInterfaceFields(fields: InterfaceField[]): { requestFields: any[]; responseFields: any[] } {
+  const req: any[] = [];
+  const resp: any[] = [];
+  fields.forEach((f, i) => {
+    const key = `${f.name}|${f.expression}`;
+    const id = `field-${i}-${hashCode(key)}`;
+    const base = {
+      id,
+      name: f.name || '',
+      expression: f.expression || '',
+      required: !!f.required,
+      type: mapDataType(f.data_type || 'string'),
+    };
+    const target = isRequestExpression(f.expression) ? req : resp;
+    const item = target === resp ? { ...base, description: f.description || '' } : base;
+    target.push(item);
+  });
+  return { requestFields: req, responseFields: resp };
+}
+
+function isResponseExpression(expr: string = ''): boolean {
+  const e = expr.toLowerCase();
+  return e.startsWith('response') || e.includes('response.data') || e.includes('items[');
+}
+
+function isRequestExpression(expr: string = ''): boolean {
+  const e = expr.toLowerCase();
+  return e.startsWith('query') || e.startsWith('request') || e.includes('params.');
+}
+
+function hashCode(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h) + s.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
+}
+
+function dedupeFields(arr: any[]): any[] {
+  const seen = new Set<string>();
+  return arr.filter(f => {
+    const k = `${f.name}|${f.expression}`;
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+function dedupeResponseFields(arr: any[]): any[] {
+  const seen = new Set<string>();
+  return arr.filter(f => {
+    const k = `${f.name}|${f.expression}`;
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+/**
+ * 将文档块转换为文档段落
+ */
+export function transformDocChunksToSections(docChunks: DocChunk[]): DocumentSection[] {
+  if (!docChunks || !Array.isArray(docChunks)) {
+    return [];
+  }
+
+  return docChunks.map((chunk, index) => {
+    // 使用原始内容，不做任何修改
+    const content = chunk.content || '';
+
+    return {
+      id: `section-chunk-${chunk.chunk_id}`,
+      title: `文档块 ${index + 1}`,
+      content: content,
+      isAPI: false,
+      chunkId: chunk.chunk_id,
+      chunkType: chunk.chunk_type,
+      importanceScore: chunk.metadata?.importance_score,
+    };
+  });
+}
+
+/**
+ * 生成文档块标题
+ */
+function generateChunkTitle(chunk: DocChunk, index: number): string {
+  const baseTitle = `文档块 ${index + 1}`;
+
+  switch (chunk.chunk_type) {
+    case 'header_section':
+      return `📋 ${baseTitle} - 标题章节`;
+    case 'paragraph':
+      return `📝 ${baseTitle} - 段落内容`;
+    case 'large_text_split':
+      return `📄 ${baseTitle} - 文本分割`;
+    case 'full_document':
+      return `📚 ${baseTitle} - 完整文档`;
+    default:
+      return `📄 ${baseTitle} - ${chunk.chunk_type}`;
+  }
+}
+
 /**
  * 将后端工作流结果转换为文档段落
  */
-export function transformISMToDocumentSections(ism: ISMData, rawDocs?: string[]): DocumentSection[] {
+export function transformISMToDocumentSections(
+  ism: ISMData,
+  rawDocs?: string[],
+  docChunks?: DocChunk[]
+): DocumentSection[] {
   const sections: DocumentSection[] = [];
 
   // 添加文档概述段落
   if (ism && ism.doc_meta) {
+    let content = `文档标题：${ism.doc_meta.title || '未知文档'}\n文档来源：${ism.doc_meta.url || ''}\n`;
+
+    // 添加文档块统计信息
+    if (ism.doc_meta.total_chunks || ism.doc_meta.chunks_with_grid) {
+      content += `\n📊 文档处理统计：`;
+      if (ism.doc_meta.total_chunks) {
+        content += `\n• 总文档块数：${ism.doc_meta.total_chunks}`;
+      }
+      if (ism.doc_meta.chunks_with_grid) {
+        content += `\n• 包含表格的块：${ism.doc_meta.chunks_with_grid}`;
+      }
+      if (ism.doc_meta.parsing_mode) {
+        content += `\n• 解析模式：${ism.doc_meta.parsing_mode}`;
+      }
+      content += '\n';
+    }
+
+    content += `\n本文档包含了系统的接口规范和功能需求。`;
+
     sections.push({
       id: 'section-overview',
       title: ism.doc_meta.title || '文档概述',
-      content: `文档标题：${ism.doc_meta.title || '未知文档'}\n文档来源：${ism.doc_meta.url || ''}\n\n本文档包含了系统的接口规范和功能需求。`,
+      content: content,
       isAPI: false,
     });
   }
 
-  // 添加原始文档内容段落（如果有的话）
-  if (rawDocs && rawDocs.length > 0) {
-    rawDocs.forEach((doc, index) => {
-      if (doc && doc.trim()) {
-        sections.push({
-          id: `section-raw-${index}`,
-          title: `原始文档内容 ${index + 1}`,
-          content: doc,
-          isAPI: false,
-        });
-      }
-    });
+  // 注释掉原始文档内容显示，只显示文档块
+  // if (rawDocs && rawDocs.length > 0) {
+  //   rawDocs.forEach((doc, index) => {
+  //     if (doc && doc.trim()) {
+  //       sections.push({
+  //         id: `section-raw-${index}`,
+  //         title: `原始文档内容 ${index + 1}`,
+  //         content: doc,
+  //         isAPI: false,
+  //       });
+  //     }
+  //   });
+  // }
+
+  // 添加文档块段落（如果有的话）
+  if (docChunks && docChunks.length > 0) {
+    const chunkSections = transformDocChunksToSections(docChunks);
+    sections.push(...chunkSections);
   }
 
   // 为每个接口创建对应的文档段落

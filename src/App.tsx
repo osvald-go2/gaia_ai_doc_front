@@ -17,6 +17,7 @@ import { motion } from 'motion/react';
 import apiService, { WorkflowResponse } from './services/api';
 import { transformISMToInterfaces, transformISMToDocumentSections, DocumentSection, validateBackendData } from './utils/dataTransform';
 import { BackendWorkflowResponse } from './types/backend';
+import { mockBackendResponseWithChunks } from './test/mockDocChunks';
 
 // 默认飞书文档链接
 const DEFAULT_FEISHU_URL = 'https://ecnjtt87q4e5.feishu.cn/wiki/O2NjwrNDCiRDqMkWJyfcNwd5nXe';
@@ -115,7 +116,8 @@ function AppContent() {
         const newInterfaces = transformISMToInterfaces(backendData.ism);
         const newDocumentSections = transformISMToDocumentSections(
           backendData.ism,
-          backendData.raw_docs
+          backendData.raw_docs,
+          backendData.doc_chunks || backendData.ism.doc_chunks
         );
 
         // 更新状态
@@ -241,6 +243,64 @@ function AppContent() {
     toast.success('已清空历史记录');
   };
 
+  const handleTestDocChunks = () => {
+    // 使用模拟的文档块数据进行测试
+    setCurrentURL('测试文档块功能');
+    setLoadingError(null);
+    setStep('loading');
+
+    // 模拟加载时间
+    setTimeout(() => {
+      try {
+        const backendData = mockBackendResponseWithChunks;
+
+        // 转换数据
+        const newInterfaces = transformISMToInterfaces(backendData.ism);
+        const newDocumentSections = transformISMToDocumentSections(
+          backendData.ism,
+          backendData.raw_docs,
+          backendData.doc_chunks || backendData.ism.doc_chunks
+        );
+
+        // 更新状态
+        setInterfaces(newInterfaces);
+        setDocumentSections(newDocumentSections);
+        setStep('parsed');
+
+        if (newInterfaces.length > 0) {
+          setSelectedInterfaceId(newInterfaces[0].id);
+        }
+
+        // 添加到历史记录
+        const historyItem: HistoryItem = {
+          id: `test-${Date.now()}`,
+          url: '测试文档块功能',
+          title: backendData.ism.doc_meta.title || '测试文档',
+          timestamp: new Date().toISOString(),
+          interfaceCount: newInterfaces.length,
+        };
+
+        if (settings.autoSave) {
+          setHistory((prev) => {
+            const updated = [historyItem, ...prev].slice(0, settings.maxHistoryItems);
+            localStorage.setItem('apiGenHistory', JSON.stringify(updated));
+            return updated;
+          });
+        }
+
+        if (settings.enableNotifications) {
+          toast.success('文档块测试成功', {
+            description: `已生成 ${newInterfaces.length} 个接口和 ${newDocumentSections.length} 个文档块`,
+          });
+        }
+      } catch (error) {
+        console.error('Test failed:', error);
+        setLoadingError('测试失败：' + (error instanceof Error ? error.message : '未知错误'));
+        setStep('input');
+      }
+    }, 1500);
+  };
+
   const handleUpdateSettings = (newSettings: AppSettings) => {
     setSettings(newSettings);
     if (newSettings.enableNotifications) {
@@ -326,6 +386,7 @@ function AppContent() {
           loading={false}
           onOpenHistory={() => setIsHistoryOpen(true)}
           onOpenSettings={() => setIsSettingsOpen(true)}
+          onTestDocChunks={handleTestDocChunks}
         />
         <HistoryPanel
           isOpen={isHistoryOpen}

@@ -1,5 +1,6 @@
 import { Code2, ChevronRight, Plus, ChevronLeft, Check } from 'lucide-react';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area@1.2.3';
+import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
 import { motion, AnimatePresence } from 'motion/react';
@@ -206,9 +207,8 @@ export function InterfaceList({
               </div>
             </div>
 
-      <ScrollAreaPrimitive.Root className="relative flex-1 overflow-hidden">
-        <ScrollAreaPrimitive.Viewport className="h-full w-full">
-          <div className="p-2 space-y-1">
+      <ScrollArea type="always" className="relative flex-1">
+        <div className="p-2 space-y-1">
           {interfaces.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -322,19 +322,8 @@ export function InterfaceList({
               })}
             </>
           )}
-          </div>
-        </ScrollAreaPrimitive.Viewport>
-        
-        {/* 自定义滚动条样式 - 悬停时显示 */}
-        <ScrollAreaPrimitive.ScrollAreaScrollbar
-          orientation="vertical"
-          className="flex touch-none select-none transition-all w-2.5 border-l border-l-transparent p-px hover:w-3.5 duration-200 data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out-0 data-[state=visible]:fade-in-0"
-        >
-          <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-primary/30 hover:bg-primary/50 transition-colors duration-200" />
-        </ScrollAreaPrimitive.ScrollAreaScrollbar>
-        
-        <ScrollAreaPrimitive.Corner />
-      </ScrollAreaPrimitive.Root>
+        </div>
+      </ScrollArea>
           </motion.div>
         )}
       </AnimatePresence>

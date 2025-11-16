@@ -79,7 +79,7 @@ export function DocumentPreview({ isOpen, onClose, interfaces, sections }: Docum
 
             {/* Markdown Content */}
             <div className="flex-1 overflow-hidden">
-              <ScrollArea className="h-full">
+              <ScrollArea className="h-full w-full">
                 <div className="p-8 markdown-preview">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}

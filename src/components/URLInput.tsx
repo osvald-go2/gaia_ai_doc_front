@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { Loader2, Link as LinkIcon, Clock, Settings } from 'lucide-react';
+import { Loader2, Link as LinkIcon, Clock, Settings, TestTube } from 'lucide-react';
 
 interface URLInputProps {
   onSubmit: (url: string) => void;
   loading: boolean;
   onOpenHistory?: () => void;
   onOpenSettings?: () => void;
+  onTestDocChunks?: () => void;
 }
 
-export function URLInput({ onSubmit, loading, onOpenHistory, onOpenSettings }: URLInputProps) {
+export function URLInput({ onSubmit, loading, onOpenHistory, onOpenSettings, onTestDocChunks }: URLInputProps) {
   const [url, setUrl] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -35,13 +36,24 @@ export function URLInput({ onSubmit, loading, onOpenHistory, onOpenSettings }: U
         </Button>
       </div>
 
-      {/* 右上角设置按钮 */}
-      <div className="absolute top-8 right-8">
+      {/* 右上角按钮组 */}
+      <div className="absolute top-8 right-8 space-y-2">
+        {onTestDocChunks && (
+          <Button
+            onClick={onTestDocChunks}
+            variant="outline"
+            size="sm"
+            className="w-full gap-2 border-blue-500/30 hover:bg-blue-500/10 hover:text-blue-600 hover:border-blue-500/50 transition-all duration-200 shadow-sm"
+          >
+            <TestTube className="w-4 h-4" />
+            测试文档块
+          </Button>
+        )}
         <Button
           onClick={onOpenSettings}
           variant="outline"
           size="sm"
-          className="gap-2 border-primary/30 hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all duration-200 shadow-sm"
+          className="w-full gap-2 border-primary/30 hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all duration-200 shadow-sm"
         >
           <Settings className="w-4 h-4" />
           系统设置

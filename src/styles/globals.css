@@ -217,6 +217,7 @@
   }
 }
 
+
 /* Canvas grid background */
 .canvas-grid {
   background-image: linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
@@ -490,4 +491,23 @@ html {
   [data-theme="claude"] .sql-operator {
     color: #000000; /* 黑色操作符 */
   }
+}
+[data-slot="markdown"] ul {
+  list-style-type: disc;
+  margin-left: 1.25rem;
+  padding-left: 0.25rem;
+}
+[data-slot="markdown"] ol {
+  list-style-type: decimal;
+  margin-left: 1.25rem;
+  padding-left: 0.25rem;
+}
+[data-slot="markdown"] li {
+  margin: 0.25rem 0;
+}
+[data-slot="markdown"] li::marker {
+  color: var(--primary);
+}
+[data-slot="markdown"] p {
+  margin-bottom: 0.5rem;
 }
